@@ -17,11 +17,11 @@ export function App() {
   const [isFollowing, setIsFollowing] = useState(
     () => JSON.parse(localStorage.getItem('isFollowing')) ?? false
   );
-    const [followers, setFollowers] = useState(
+  const [followers, setFollowers] = useState(
     () => JSON.parse(localStorage.getItem('followers')) ?? '100500'
   );
 
-  const tweets= 777;
+  const tweets = 777;
 
   useEffect(() => {
     localStorage.setItem('followers', JSON.stringify(followers));

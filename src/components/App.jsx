@@ -1,64 +1,72 @@
 import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 
-import { ContactForm } from './ContactForm/ContactForm';
-import { ContactList } from './ContactList/ContactList';
-import { Filter } from './Filter/Filter';
-import { Container } from './App.styled';
+// import { ContactForm } from './ContactForm/ContactForm';
+// import { ContactList } from './ContactList/ContactList';
+// import { Filter } from './Filter/Filter';
+import boy from 'images/boy.svg';
+import logo from 'images/logo.svg';
+import {
+  Block,
+  BlockFirst,
+  BlockSecond,
+  Container,
+  LogoImg,
+  AvatarImg,
+  TweetInfo,
+  Btn,
+} from './App.styled';
 
 export function App() {
-  const [filter, setFilter] = useState('');
-  const [contacts, setContacts] = useState(
-    () => JSON.parse(localStorage.getItem('contacts')) ?? []
+  const [isFollowing, setIsFollowing] = useState(
+    () => JSON.parse(localStorage.getItem('isFollowing')) ?? false
+  );
+  const [tweets, setTweets] = useState('777');
+  const [followers, setFollowers] = useState(
+    () => JSON.parse(localStorage.getItem('followers')) ?? '100500'
   );
 
-  //
-
   useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+    localStorage.setItem('followers', JSON.stringify(followers));
+    localStorage.setItem('isFollowing', JSON.stringify(isFollowing));
+  }, [followers]);
 
-  const formSubmitHandler = ({ name, number }) => {
-    const isInclude = contacts.some(contact => contact.name === name);
-    if (isInclude) {
-      alert('This contact is already in your contact list');
-      return;
+  const handleBtnClick = event => {
+    if (isFollowing) {
+      setIsFollowing(false);
+      setFollowers(prevState => +prevState - 1);
+    } else {
+      setIsFollowing(true);
+      setFollowers(prevState => +prevState + 1);
     }
-    setContacts(prevState => [
-      ...prevState,
-      { id: nanoid(), name: name, number: number },
-    ]);
   };
 
-  const changeFilter = event => {
-    setFilter(event.target.value);
+  const addPoint = foll => {
+    let follStr = String(foll);
+    let a = follStr.slice(0, 3);
+
+    let b = follStr.slice(3, 6);
+    return a + ',' + b;
   };
 
-  const deleteContactFromArr = id => {
-    setContacts(contacts =>
-      contacts.filter(contactItem => contactItem.id !== id)
-    );
-  };
-
-  const normalizedFilter = filter.toLowerCase();
-
-  const visibleItems = contacts.filter(contactItem => {
-    return contactItem.name.toLowerCase().includes(normalizedFilter);
-  });
+  let followersVisual = addPoint(followers);
 
   return (
     <Container>
-      <h1>Phonebook App</h1>
-      <ContactForm onSubmit={formSubmitHandler} />
-      <Filter filterValue={filter} onChange={changeFilter} />
-      {visibleItems.length > 0 ? (
-        <ContactList
-          contacts={visibleItems}
-          deleteContact={deleteContactFromArr}
-        />
-      ) : (
-        <p>Your contact list is empty</p>
-      )}
+      <LogoImg src={logo} alt="logo image" />
+      <BlockFirst> </BlockFirst>
+      <Block>
+        <AvatarImg src={boy} alt="avatar image" />
+      </Block>
+      <BlockSecond>
+        <TweetInfo>
+          <p>{tweets} tweets</p>
+          <p>{followersVisual} followers</p>
+        </TweetInfo>
+        <Btn onClick={handleBtnClick} isFollowing={isFollowing}>
+          {isFollowing ? 'Following' : 'Follow'}
+        </Btn>
+      </BlockSecond>
     </Container>
   );
 }

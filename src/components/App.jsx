@@ -41,7 +41,6 @@ export function App() {
   const addPoint = foll => {
     let follStr = String(foll);
     let a = follStr.slice(0, 3);
-
     let b = follStr.slice(3, 6);
     return a + ',' + b;
   };
